@@ -12,7 +12,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by abrami on 28.09.16.
@@ -129,6 +133,50 @@ public class ArchiveUtils {
             }
         }
         file.delete();
+    }
+
+
+    public static File createZipArchive(List<File> inputFiles) throws IOException {
+
+        File rFile = TempFileHandler.getTempFile("aaa", "bbb");
+
+        return createZipArchive(inputFiles, rFile);
+
+
+    }
+
+    public static File createZipArchive(List<File> inputFiles, File pTargetFile) throws IOException {
+
+        File rFile = pTargetFile;
+
+        FileOutputStream fos = new FileOutputStream(rFile);
+
+        ZipOutputStream zos = new ZipOutputStream(fos);
+
+        byte[] buffer = new byte[1024];
+
+        for (int i = 0; i < inputFiles.size(); i++) {
+
+            FileInputStream fis = new FileInputStream(inputFiles.get(i));
+
+            // begin writing a new ZIP entry, positions the stream to the start of the entry data
+            zos.putNextEntry(new ZipEntry(inputFiles.get(i).getName()));
+
+            int length;
+
+            while ((length = fis.read(buffer)) > 0) {
+                zos.write(buffer, 0, length);
+            }
+
+            zos.closeEntry();
+
+            fis.close();
+
+        }
+        zos.close();
+
+        return rFile;
+
     }
 
 }
