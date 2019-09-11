@@ -150,6 +150,28 @@
             <groupId>com.github.texttechnologylab</groupId>
             <artifactId>textimager-client</artifactId>
             <version>ee014cbf58</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>uimafit-core</artifactId>
+                    <groupId>org.apache.uima</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>uimaj-core</artifactId>
+                    <groupId>org.apache.uima</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- UIMA -->
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uimaj-core</artifactId>
+            <version>2.10.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uimafit-core</artifactId>
+            <version>2.4.0</version>
         </dependency>
 
     </dependencies>
