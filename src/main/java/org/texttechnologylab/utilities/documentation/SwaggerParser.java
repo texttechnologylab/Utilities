@@ -23,7 +23,9 @@ public class SwaggerParser {
     }
 
     public static Swagger getSwagger(String packageName) {
+
         Reflections reflections = new Reflections(packageName);
+
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setResourcePackage(packageName);
         beanConfig.setScan(true);
