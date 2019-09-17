@@ -5,16 +5,20 @@
 
     <groupId>org.texttechnologylab</groupId>
     <artifactId>utilities</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
 
     <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Plugin Repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
         <repository>
             <id>hu-central</id>
             <name>alba-releases</name>
             <url>http://service.hucompute.org/artifactory/libs-snapshot-local</url>
         </repository>
-
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -43,6 +47,26 @@
                     <excludes></excludes>
                     <rulesUri>file://${basedir}/version-rules.xml</rulesUri>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -100,6 +124,16 @@
             <groupId>io.swagger.codegen.v3</groupId>
             <artifactId>swagger-codegen</artifactId>
             <version>3.0.11</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>logback-classic</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>logback-core</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -122,9 +156,19 @@
         </dependency>
 
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.12.1</version>
         </dependency>
 
         <dependency>
@@ -143,6 +187,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.19</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
         </dependency>
 
         <dependency>
@@ -183,6 +233,12 @@
             <version>3.1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uimaj-document-annotation</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.uima/uimafit-core -->
         <dependency>
             <groupId>org.apache.uima</groupId>
@@ -198,6 +254,37 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- DKPro -->
+        <dependency>
+            <groupId>org.dkpro.core</groupId>
+            <artifactId>dkpro-core</artifactId>
+            <version>2.0.0</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.dkpro.core</groupId>
+            <artifactId>dkpro-core-api-metadata-asl</artifactId>
+            <version>2.0.0</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.dkpro.core</groupId>
+            <artifactId>dkpro-core-api-io-asl</artifactId>
+            <version>2.0.0</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.dkpro.core</groupId>
+            <artifactId>dkpro-core-api-parameter-asl</artifactId>
+            <version>2.0.0</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
