@@ -1,4 +1,4 @@
-package org.texttechnologylab.utilities.uima;
+package org.texttechnologylab.utilities.uima.jcas;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.fit.factory.FsIndexFactory;

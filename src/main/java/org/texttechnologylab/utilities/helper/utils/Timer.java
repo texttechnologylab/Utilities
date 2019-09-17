@@ -1,7 +1,7 @@
 package org.texttechnologylab.utilities.helper.utils;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 
 /**
  * Created by abrami on 14.03.16.
