@@ -128,7 +128,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 	private int totalDocumentCount = 0;
 	private ConcurrentHashMap<Path, XmiSerializationSharedData> xmiSerializationSharedDataMap;
 	
-//	private ProgressMeter downloadProgress;
+	//	private ProgressMeter downloadProgress;
 //	private ProgressMeter processingProgress;
 	private ArrayList<Future<Path>> tasks = new ArrayList<>();
 	
@@ -156,7 +156,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 //				downloadProgress = new ProgressMeter(totalDocumentCount);
 //				processingProgress = new ProgressMeter(totalDocumentCount);
 			
-			logger.info(String.format("Downloading %d files in parallel with %d threads for from repository '%s':\n%s",
+			logger.info(String.format("Downloading %d files in parallel with %d threads for from repository '%s'\nURIs: %s",
 					totalDocumentCount, pThreads, pRepository, remoteUris.toString()));
 			
 			// Download and pre-process all remote files in parallel
@@ -181,11 +181,14 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			e.printStackTrace();
 		} finally {
 			// Update process
-//			int processed = processingCount.incrementAndGet();
-//			processingProgress.setDone(processed);
-//			if (logFreq > 0 && processed % logFreq == 0) {
-//				logger.info(String.format("Processing %s, %s", processingProgress, path.getFileName().toString()));
-//			}
+			int processed = processingCount.incrementAndGet();
+			Progress[] progressArray = this.getProgress();
+			if (progressArray.length > 0) {
+				Progress progress = progressArray[0];
+				if (logFreq > 0 && processed % logFreq == 0) {
+					logger.info(String.format("Processing %s, %s", progress.toString(), path.getFileName().toString()));
+				}
+			}
 		}
 	}
 	
