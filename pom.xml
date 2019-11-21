@@ -15,11 +15,6 @@
             <url>http://repo1.maven.org/maven2</url>
         </repository>
         <repository>
-            <id>hu-central</id>
-            <name>alba-releases</name>
-            <url>http://service.hucompute.org/artifactory/libs-snapshot-local</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
