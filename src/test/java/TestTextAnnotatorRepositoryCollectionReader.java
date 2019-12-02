@@ -1,8 +1,6 @@
 import com.google.common.io.Files;
-import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.texttechnologylab.utilities.uima.reader.TextAnnotatorRepositoryCollectionReader;
 
 import java.io.File;

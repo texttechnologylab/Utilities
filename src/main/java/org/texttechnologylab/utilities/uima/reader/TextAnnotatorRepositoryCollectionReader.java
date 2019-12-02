@@ -2,6 +2,7 @@ package org.texttechnologylab.utilities.uima.reader;
 
 import com.google.common.collect.Sets;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 import eu.openminted.share.annotations.api.Component;
 import eu.openminted.share.annotations.api.constants.OperationType;
 import org.apache.commons.io.FileUtils;
@@ -16,14 +17,13 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.CasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasIOUtils;
-import org.apache.uima.util.Logger;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
-import org.dkpro.core.api.parameter.ComponentParameters;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.texttechnologylab.utilities.helper.RESTUtils;
@@ -48,7 +48,7 @@ import static de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData.g
 
 @Component(value = OperationType.READER)
 public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader_ImplBase {
-	private Logger logger;
+	private ExtendedLogger logger;
 	
 	public static final String PARAM_TEXT_ANNOTATOR_URL = "pTextAnnotatorUrl";
 	@ConfigurationParameter(
