@@ -5,10 +5,15 @@
 
     <groupId>org.texttechnologylab</groupId>
     <artifactId>utilities</artifactId>
-    <version>1.0.2-uima-2.10.4</version>
+    <version>1.0.3-uima-2.10.4</version>
 
 
     <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Plugin Repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
         <repository>
             <id>hu-central</id>
             <name>alba-releases</name>
@@ -43,6 +48,26 @@
                     <excludes></excludes>
                     <rulesUri>file://${basedir}/version-rules.xml</rulesUri>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -100,6 +125,16 @@
             <groupId>io.swagger.codegen.v3</groupId>
             <artifactId>swagger-codegen</artifactId>
             <version>3.0.11</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>logback-classic</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>logback-core</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -143,6 +178,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.19</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
         </dependency>
 
         <dependency>
@@ -196,6 +237,28 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.openminted.share.annotations</groupId>
+            <artifactId>omtd-share-annotations-api</artifactId>
+            <version>3.0.2.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.core.io.xmi-asl</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.core.api.parameter-asl</artifactId>
+            <version>1.8.0</version>
         </dependency>
 
 
