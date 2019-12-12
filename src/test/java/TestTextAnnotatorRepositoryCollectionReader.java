@@ -28,7 +28,7 @@ public class TestTextAnnotatorRepositoryCollectionReader {
 					//						, XmiReader.PARAM_LOG_FREQ, -1
 			));
 			
-			while (!collection.isDone())
+			while (!collection.allTasksDone())
 				Thread.sleep(1000);
 		} catch (Exception e) {
 			e.printStackTrace();

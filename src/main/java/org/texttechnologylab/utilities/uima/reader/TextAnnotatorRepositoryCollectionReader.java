@@ -177,8 +177,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 		try (FileInputStream inputStream = FileUtils.openInputStream(path.toFile())) {
 			XmiCasDeserializer.deserialize(inputStream, aCAS, true, xmiSerializationSharedDataMap.get(path));
 		} catch (Exception e) {
-			logger.error("Error while opening file: " + path.toString());
-			e.printStackTrace();
+			logger.error("Error while opening file: " + path.toString() + "\n" + e.getMessage());
 		} finally {
 			// Update process
 			int processed = processingCount.incrementAndGet();
@@ -205,23 +204,17 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 		return !currentResources.isEmpty();
 	}
 	
-	public boolean isDone() {
+	public boolean allTasksDone() {
 		return tasks.stream()
 				.map(this::checkFuture)
-				.reduce(Boolean::logicalAnd).orElse(false);
+				.reduce(Boolean::logicalAnd).orElse(true);
 	}
 	
 	private void waitForNext() {
 		try {
-			Boolean allTasksDone = tasks.stream()
-					.map(this::checkFuture)
-					.reduce(Boolean::logicalAnd).orElse(false);
 			synchronized (currentResources) {
-				while (currentResources.isEmpty() && !allTasksDone) {
+				while (currentResources.isEmpty() && !this.allTasksDone()) {
 					currentResources.wait(500);
-					allTasksDone = tasks.stream()
-							.map(this::checkFuture)
-							.reduce(Boolean::logicalAnd).orElse(false);
 				}
 			}
 		} catch (InterruptedException e) {
@@ -287,6 +280,9 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 					} catch (Exception e) {
 						logger.warn("Could not copy file from input stream: " + casURL.toString());
 						logger.warn(e.getMessage());
+						// Delete old file
+						delete(utf8File);
+						updateDownloadProgress(mongoUri);
 						return null; // FIXME
 					}
 					
@@ -297,6 +293,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 						} catch (Exception e) {
 							logger.warn("Could not load file: " + utf8Path);
 							logger.warn(e.getMessage());
+							updateDownloadProgress(mongoUri);
 							return null; // FIXME
 						}
 						
@@ -317,11 +314,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 						}
 						
 						// Delete old file
-						try {
-							FileUtils.forceDelete(utf8File);
-						} catch (FileNotFoundException | NullPointerException e) {
-							logger.warn("File " + utf8Path.toString() + " up for deletion could not be found.");
-						}
+						delete(utf8File);
 						
 						// Reserialize file as xmi
 						try (FileOutputStream outputStream = new FileOutputStream(utf8File)) {
@@ -331,23 +324,27 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 						} catch (Exception e) {
 							logger.warn("Could not write reserialized file: " + utf8Path);
 							logger.warn(e.getMessage());
+							updateDownloadProgress(mongoUri);
 							return null; // FIXME
 						}
 					}
 					
-					Path textPath = Paths.get(targetLocation, uri + ".txt");
-					try {
-						// Write raw text as UTF-8 file
-						if (jCas.getDocumentText() != null && !jCas.getDocumentText().isEmpty()) {
-							String content = jCas.getDocumentText();
-							try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(Files.newOutputStream(textPath), StandardCharsets.UTF_8))) {
-								pw.print(content);
+					if (targetLocation != null && !targetLocation.equals("")) {
+						Path textPath = Paths.get(targetLocation, uri + ".txt");
+						try {
+							// Write raw text as UTF-8 file
+							if (jCas.getDocumentText() != null && !jCas.getDocumentText().isEmpty()) {
+								String content = jCas.getDocumentText();
+								try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(Files.newOutputStream(textPath), StandardCharsets.UTF_8))) {
+									pw.print(content);
+								}
 							}
+						} catch (Exception e) {
+							logger.warn("Could not write text file: " + textPath);
+							logger.warn(e.getMessage());
+							updateDownloadProgress(mongoUri);
+							return null; // FIXME
 						}
-					} catch (Exception e) {
-						logger.warn("Could not write text file: " + textPath);
-						logger.warn(e.getMessage());
-						return null; // FIXME
 					}
 				} else {
 					// If response JSON misses the "success" field, throw an exception
@@ -358,14 +355,26 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				// Update progress
-				int downloads = downloadCount.incrementAndGet();
-//				downloadProgress.setDone(downloads);
-				if (logFreq > 0 && downloads % logFreq == 0) {
-					logger.info(String.format("Download %s/%d, %s", downloads, totalDocumentCount, mongoUri));
-				}
+				updateDownloadProgress(mongoUri);
 			}
 			return utf8Path;
+		}
+		
+		private void delete(File utf8File) throws IOException {
+			// Delete old file
+			try {
+				FileUtils.forceDelete(utf8File);
+			} catch (FileNotFoundException | NullPointerException e) {
+				logger.warn("File " + utf8File.getPath() + " up for deletion could not be found.");
+			}
+		}
+	}
+	
+	private void updateDownloadProgress(String mongoUri) {
+		int downloads = downloadCount.incrementAndGet();
+//				downloadProgress.setDone(downloads);
+		if (logFreq > 0 && downloads % logFreq == 0) {
+			logger.info(String.format("Download %s/%d, %s", downloads, totalDocumentCount, mongoUri));
 		}
 	}
 }
