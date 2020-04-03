@@ -11,7 +11,7 @@ import java.nio.file.Paths;
  * Created on 17.09.19.
  */
 public class TestTextAnnotatorRepositoryCollectionReader {
-	@Test
+	//@Test
 	public void testTADownload() {
 		try {
 			String xmiPath = "src/test/out/xmi/";
@@ -27,7 +27,7 @@ public class TestTextAnnotatorRepositoryCollectionReader {
 					TextAnnotatorRepositoryCollectionReader.PARAM_FORCE_RESERIALIZE, true
 					//						, XmiReader.PARAM_LOG_FREQ, -1
 			));
-			
+
 			while (!collection.isDone())
 				Thread.sleep(1000);
 		} catch (Exception e) {
