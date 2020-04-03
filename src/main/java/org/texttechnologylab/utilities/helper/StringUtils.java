@@ -97,7 +97,15 @@ public class StringUtils {
     }
 
     public static void writeContent(String pContent, File pFile, String sCharSet) throws IOException {
-        PrintWriter lWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(pFile), sCharSet.length()==0 ? "UTF-8": sCharSet));
+        writeContent(pContent, pFile, false, "UTF-8");
+    }
+
+    public static void writeContent(String pContent, File pFile, boolean bAppend) throws IOException {
+        writeContent(pContent, pFile, bAppend, "UTF-8");
+    }
+
+    public static void writeContent(String pContent, File pFile, boolean bAppend, String sCharSet) throws IOException {
+        PrintWriter lWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(pFile), sCharSet.length()==0 ? "UTF-8": sCharSet), bAppend);
         lWriter.println(pContent);
         lWriter.close();
     }
