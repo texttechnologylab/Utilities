@@ -97,7 +97,7 @@ public class StringUtils {
     }
 
     public static void writeContent(String pContent, File pFile, String sCharSet) throws IOException {
-        writeContent(pContent, pFile, false, "UTF-8");
+        writeContent(pContent, pFile, false, sCharSet);
     }
 
     public static void writeContent(String pContent, File pFile, boolean bAppend) throws IOException {
