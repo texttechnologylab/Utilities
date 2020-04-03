@@ -5,7 +5,7 @@
 
     <groupId>org.texttechnologylab</groupId>
     <artifactId>utilities</artifactId>
-    <version>1.0.4-uima-2.10.4</version>
+    <version>1.0.5-uima-2.10.4</version>
 
 
     <repositories>
