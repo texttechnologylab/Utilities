@@ -92,14 +92,28 @@ public class BorlandUtils {
             sb.append(delemiter);
 
             valueMap.keySet().forEach(k->{
+                boolean bValid = false;
+                Object pValue = valueMap.get(k);
 
-                sb.append("[");
+                if(pValue instanceof String){
+                    if(((String)pValue).length()>0){
+                        bValid=true;
+                    }
+                }
+                else{
+                    bValid=true;
+                }
+
+                if(bValid) {
+
+                    sb.append("[");
                     sb.append(k);
                     sb.append(delemiter);
                     sb.append(valueMap.get(k));
-                sb.append("]");
-                sb.append(delemiter);
-
+                    sb.append(delemiter);
+                    sb.append("]");
+                    sb.append(delemiter);
+                }
             });
             sb.append("\n");
         return sb.toString();
@@ -107,14 +121,19 @@ public class BorlandUtils {
     }
 
 
-    public static void writeEdge(Object source, Object target, List<Object> values, File fFile) throws IOException {
-
-        StringUtils.writeContent(addEdge(source, target, values), fFile, true);
-
+    public static void writeEdge(Object source, Object target, float fWeight, Map<String, Object> values, File fFile) throws IOException {
+        StringUtils.writeContent(addEdge(source, target, fWeight, values), fFile, true);
     }
 
+    public static void writeEdge(Object source, Object target, Map<String, Object> values, File fFile) throws IOException {
+        StringUtils.writeContent(addEdge(source, target, 0.0f, values), fFile, true);
+    }
 
-    public static String addEdge(Object source, Object target, List<Object> values){
+    public static String addEdge(Object source, Object target, Map<String, Object> values) {
+        return addEdge(source, target, 0.0f, values);
+    }
+
+    public static String addEdge(Object source, Object target, float fWeight, Map<String, Object> values){
 
         StringBuilder sb = new StringBuilder();
 
@@ -123,15 +142,20 @@ public class BorlandUtils {
             sb.append(target);
             sb.append(delemiter);
 
-            values.forEach(k->{
+
+            sb.append(fWeight);
+            sb.append(delemiter);
+
+
+            values.keySet().forEach(k->{
+                sb.append("[");
                 sb.append(k);
                 sb.append(delemiter);
-            });
-
-            if(values.size()==0){
-                sb.append("0.0");
+                sb.append(values.get(k));
                 sb.append(delemiter);
-            }
+                sb.append("]");
+                sb.append(delemiter);
+            });
 
             sb.append("\n");
         return sb.toString();
