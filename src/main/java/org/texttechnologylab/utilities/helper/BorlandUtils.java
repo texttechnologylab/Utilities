@@ -109,7 +109,15 @@ public class BorlandUtils {
                     sb.append("[");
                     sb.append(k);
                     sb.append(delemiter);
-                    sb.append(valueMap.get(k));
+
+                    if(valueMap.get(k) instanceof String){
+                        sb.append(((String)valueMap.get(k)).replace("[", "'").replace("]", "'"));
+                    }
+                    else{
+                        sb.append(valueMap.get(k));
+                    }
+
+
                     sb.append(delemiter);
                     sb.append("]");
                     sb.append(delemiter);
