@@ -1,6 +1,5 @@
 package org.texttechnologylab.utilities.helper;
 
-import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -19,8 +18,8 @@ public class ImageUtils {
         BufferedImage image = null;
         byte[] imageByte;
 
-        BASE64Decoder decoder = new BASE64Decoder();
-        imageByte = decoder.decodeBuffer(pString);
+        Base64.Decoder decoder = Base64.getDecoder();
+        imageByte = decoder.decode(pString);
         ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
         image = ImageIO.read(bis);
         bis.close();
@@ -37,13 +36,10 @@ public class ImageUtils {
 
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        try
-        {
+        try {
             ImageIO.write(bI, "png", os);
             return Base64.getEncoder().encodeToString(os.toByteArray());
-        }
-        catch (final IOException ioe)
-        {
+        } catch (final IOException ioe) {
             throw new UncheckedIOException(ioe);
         }
 

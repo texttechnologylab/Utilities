@@ -1,7 +1,6 @@
 package org.texttechnologylab.utilities.helper;
 
 import org.apache.commons.io.IOUtils;
-import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -12,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Set;
 
 /**
@@ -122,8 +122,8 @@ public class StringUtils {
         BufferedImage image = null;
         byte[] imageByte;
 
-        BASE64Decoder decoder = new BASE64Decoder();
-        imageByte = decoder.decodeBuffer(pString);
+        Base64.Decoder decoder = Base64.getDecoder();
+        imageByte = decoder.decode(pString);
         ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
         image = ImageIO.read(bis);
         bis.close();
