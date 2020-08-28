@@ -2,7 +2,7 @@ package org.texttechnologylab.utilities.uima.reader;
 
 import com.google.common.io.Files;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
