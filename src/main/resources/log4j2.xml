@@ -3,6 +3,7 @@
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %c{1} - %msg%n"/>
+            <RegexFilter regex=".*Import by (name|location).*" onMatch="DENY" onMismatch="ACCEPT"/>
         </Console>
     </Appenders>
     <Loggers>

@@ -1,11 +1,8 @@
 package org.texttechnologylab.utilities.helper;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import spark.Response;
-import sun.misc.BASE64Decoder;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -14,6 +11,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -78,8 +76,8 @@ public class FileUtils {
         BufferedImage image = null;
         byte[] imageByte;
 
-        BASE64Decoder decoder = new BASE64Decoder();
-        imageByte = decoder.decodeBuffer(pString);
+        Base64.Decoder decoder = Base64.getDecoder();
+        imageByte = decoder.decode(pString);
         ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
         image = ImageIO.read(bis);
         bis.close();

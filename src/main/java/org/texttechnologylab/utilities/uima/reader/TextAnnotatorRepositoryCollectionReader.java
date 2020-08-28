@@ -34,10 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -112,6 +109,16 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 	private static Boolean pForceReserialize;
 
 	/**
+	 * If set, only download files with the given ids.
+	 */
+	public static final String PARAM_FILE_IDS = "pFileIds";
+	@ConfigurationParameter(
+			name = PARAM_FILE_IDS,
+			mandatory = false
+	)
+	private static String[] pFileIds;
+
+	/**
 	 * The frequency with which read documents are logged. Default: 1 (log every document).
 	 * <p>
 	 * Set to 0 or negative values to deactivate logging.
@@ -119,7 +126,6 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 	public static final String PARAM_LOG_FREQ = "logFreq";
 	@ConfigurationParameter(name = PARAM_LOG_FREQ, mandatory = true, defaultValue = "1")
 	private int logFreq;
-
 	private static final ArrayDeque<Path> currentResources = new ArrayDeque<>();
 	private static final HashSet<Future<Path>> processedResources = Sets.newHashSet();
 	private ExecutorService remotePool;
@@ -138,11 +144,10 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 		logger = getLogger();
 
 		remotePool = Executors.newFixedThreadPool(pThreads);
-		pSessionId = StringUtils.appendIfMissing(pSessionId, ".jvm1");
 
 		String remoteFilesURL = pTextAnnotatorUrl + "documents/" + pRepository;
 		logger.info(String.format("Fetching file URIs from %s", remoteFilesURL));
-		final JSONObject remoteFiles = RESTUtils.getObjectFromRest(remoteFilesURL, pSessionId);
+		final JSONObject remoteFiles = RESTUtils.getObjectFromRest(remoteFilesURL, getSessionId());
 
 		if (remoteFiles.optBoolean("success")) {
 			final JSONArray rArray = remoteFiles.optJSONArray("result");
@@ -152,10 +157,14 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 					.sorted()
 					.mapToObj(Objects::toString)
 					.collect(Collectors.toCollection(ArrayList::new));
-			totalDocumentCount = remoteUris.size();
 //				downloadProgress = new ProgressMeter(totalDocumentCount);
 //				processingProgress = new ProgressMeter(totalDocumentCount);
 
+			if (pFileIds != null && pFileIds.length > 0) {
+				remoteUris.retainAll(Arrays.asList(pFileIds));
+			}
+
+			totalDocumentCount = remoteUris.size();
 			logger.info(String.format("Downloading %d files in parallel with %d threads for from repository '%s'\nURIs: %s",
 					totalDocumentCount, pThreads, pRepository, remoteUris.toString()));
 
@@ -168,6 +177,10 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			logger.error("Repository URIs could not be fetched!");
 			logger.error(remoteFiles.toString());
 		}
+	}
+
+	private String getSessionId() {
+		return StringUtils.appendIfMissing(pSessionId, ".jvm1");
 	}
 
 	@Override
@@ -268,7 +281,8 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			Path utf8Path = null;
 			try {
 				// Get document JSON from MongoDB
-				JSONObject documentJSON = RESTUtils.getObjectFromRest(mongoUri, pSessionId);
+				String lSessionId = getSessionId();
+				JSONObject documentJSON = RESTUtils.getObjectFromRest(mongoUri, lSessionId);
 				if (documentJSON.getBoolean("success")) {
 					JCas jCas = JCasFactory.createJCas();
 					String documentName = documentJSON.getJSONObject("result").getString("name");
@@ -277,7 +291,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 							.replaceAll("\\.[^.]+$", "");
 
 					// Download file
-					URL casURL = new URL(pTextAnnotatorUrl + "cas/" + uri + "?session=" + pSessionId);
+					URL casURL = new URL(pTextAnnotatorUrl + "cas/" + uri + "?session=" + lSessionId);
 					utf8Path = Paths.get(sourceLocation, documentName);
 					File utf8File = utf8Path.toFile();
 					try {
@@ -291,7 +305,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 					}
 
 					// Reserialize the UTF-8 forced JCas
-					if (pForceReserialize) {
+					if (pForceReserialize && false) { // FIXME: Currently broken!
 						try (FileInputStream inputStream = FileUtils.openInputStream(utf8File)) {
 							CasIOUtils.load(inputStream, null, jCas.getCas(), true);
 						} catch (Exception e) {
@@ -326,7 +340,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 						// Reserialize file as xmi
 						try (FileOutputStream outputStream = new FileOutputStream(utf8File)) {
 							XmiSerializationSharedData xmiSerializationSharedData = new XmiSerializationSharedData();
-							XmiCasSerializer.serialize(jCas.getCas(), null, outputStream, true, xmiSerializationSharedData);
+							XmiCasSerializer.serialize(jCas.getCas(), jCas.getTypeSystem(), outputStream, true, xmiSerializationSharedData);
 							xmiSerializationSharedDataMap.put(utf8Path, xmiSerializationSharedData);
 						} catch (Exception e) {
 							logger.warn("Could not write reserialized file: " + utf8Path);
