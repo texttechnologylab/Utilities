@@ -1,7 +1,7 @@
 package org.texttechnologylab.utilities.process.impl;
 
 import com.goebl.david.Webb;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.texttechnologylab.utilities.helper.ProcessUtils;

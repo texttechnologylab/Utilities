@@ -1,6 +1,6 @@
 package org.texttechnologylab.utilities.process;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

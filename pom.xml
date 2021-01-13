@@ -156,11 +156,7 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.13.3</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-1.2-api</artifactId>
-            <version>2.13.3</version>
-        </dependency>
+
 
         <dependency>
             <groupId>com.sparkjava</groupId>
@@ -244,18 +240,32 @@
             <version>3.0.2.7</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/de.tudarmstadt.ukp.dkpro.core/de.tudarmstadt.ukp.dkpro.core.io.xmi-asl -->
         <dependency>
-            <groupId>org.dkpro.core</groupId>
-            <artifactId>dkpro-core-api-metadata-asl</artifactId>
+            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.core.io.xmi-asl</artifactId>
+            <version>1.10.0</version>
+            <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.dkpro.core</groupId>
             <artifactId>dkpro-core-io-xmi-asl</artifactId>
+            <version>${dkpro.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/de.tudarmstadt.ukp.dkpro.core/de.tudarmstadt.ukp.dkpro.core.api.parameter-asl -->
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.core.api.parameter-asl</artifactId>
+            <version>1.10.0</version>
         </dependency>
         <dependency>
-            <groupId>org.dkpro.core</groupId>
-            <artifactId>dkpro-core-api-parameter-asl</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 
