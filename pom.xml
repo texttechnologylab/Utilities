@@ -70,6 +70,8 @@
                 <configuration>
                     <argLine>-Xmx1G -Dorg.apache.uima.logger.class=org.texttechnologylab.utilities.uima.util.Log4j2Logger_impl
                     </argLine>
+                    <skipTests>true</skipTests>
+
                 </configuration>
             </plugin>
         </plugins>
@@ -99,6 +101,14 @@
             <artifactId>david-webb</artifactId>
             <version>1.3.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+        </dependency>
+
 
         <dependency>
             <groupId>javax.mail</groupId>
