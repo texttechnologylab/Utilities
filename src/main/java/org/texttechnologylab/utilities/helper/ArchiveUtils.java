@@ -70,7 +70,7 @@ public class ArchiveUtils {
 
         File rFile = new File(newPath);
 
-        if(rFile.exists()){
+        if(rFile.exists() && rFile.length()>0){
             return rFile;
         }
 
