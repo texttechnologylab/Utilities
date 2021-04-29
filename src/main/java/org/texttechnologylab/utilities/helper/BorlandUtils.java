@@ -7,8 +7,9 @@ import java.util.Map;
 public class BorlandUtils {
 
     public static final String delemiter = "¤";
+    public static final String fieldDelemiter = "¶";
 
-    public static enum DATATYPE {String, StringSet, StringList, Integer, Long, Float, Double, Boolean};
+    public static enum DATATYPE {String, StringSet, StringList, Integer, IntegerDistribution, Long, Float, Double, Boolean};
 
     public static String createHeader(Map<String,DATATYPE> vertices, Map<String,DATATYPE> edges){
 
