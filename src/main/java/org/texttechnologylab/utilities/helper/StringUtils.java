@@ -105,9 +105,7 @@ public class StringUtils {
     }
 
     public static void writeContent(String pContent, File pFile, boolean bAppend, String sCharSet) throws IOException {
-        PrintWriter lWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(pFile), sCharSet.length()==0 ? "UTF-8": sCharSet), bAppend);
-        lWriter.println(pContent);
-        lWriter.close();
+        org.apache.commons.io.FileUtils.writeStringToFile(pFile, pContent, sCharSet.length()==0 ? "UTF-8": sCharSet, bAppend);
     }
 
     public static File stringToImage(String pString) throws IOException {

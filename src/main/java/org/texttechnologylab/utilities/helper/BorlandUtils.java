@@ -33,7 +33,7 @@ public class BorlandUtils {
     public static void writeHeader(Map<String,DATATYPE> vertices, Map<String,DATATYPE> edges, File pFile) throws IOException {
 
         String tString = createHeader(vertices, edges);
-        StringUtils.writeContent(tString, pFile, true);
+        StringUtils.writeContent(tString, pFile);
 
     }
 
