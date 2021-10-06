@@ -44,19 +44,21 @@ public class MailConnection {
     }
 
     private void init() throws MessagingException{
+        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
         // GetMails
         if(sImap.length()>0){
             props.setProperty("mail.imap.host", sImap);
             props.setProperty("mail.imap.port", String.valueOf(iImapPort));
             props.setProperty("mail.imap.connectiontimeout", "10000");
+            props.setProperty("mail.imap.socketFactory.class", SSL_FACTORY);
+            props.setProperty("mail.imap.socketFactory.fallback","false");
         }
         else {
             props.setProperty("mail.pop3.host", sPop);
             props.setProperty("mail.pop3.port", String.valueOf(iPopPort));
             props.setProperty("mail.pop3.starttls.enable", "true");
         }
-
 
         // SendMails
         props.setProperty( "mail.smtp.host", sSmtp );
