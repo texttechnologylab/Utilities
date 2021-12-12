@@ -5,7 +5,7 @@ import org.apache.uima.cas.CAS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.texttechnologylab.utilities.helper.RESTUtils;
 
 import java.io.IOException;

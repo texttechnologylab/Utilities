@@ -1,3 +1,5 @@
+package org.texttechnologylab.utilities.uima.reader;
+
 import com.google.common.io.Files;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.junit.Test;
@@ -27,7 +29,7 @@ public class TestTextAnnotatorRepositoryCollectionReader {
 					TextAnnotatorRepositoryCollectionReader.PARAM_FORCE_RESERIALIZE, true
 					//						, XmiReader.PARAM_LOG_FREQ, -1
 			));
-			
+
 			while (!collection.allTasksDone())
 				Thread.sleep(1000);
 		} catch (Exception e) {

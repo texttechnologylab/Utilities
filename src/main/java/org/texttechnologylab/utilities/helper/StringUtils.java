@@ -1,7 +1,6 @@
 package org.texttechnologylab.utilities.helper;
 
 import org.apache.commons.io.IOUtils;
-import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -12,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Set;
 
 /**
@@ -97,9 +97,15 @@ public class StringUtils {
     }
 
     public static void writeContent(String pContent, File pFile, String sCharSet) throws IOException {
-        PrintWriter lWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(pFile), sCharSet.length()==0 ? "UTF-8": sCharSet));
-        lWriter.println(pContent);
-        lWriter.close();
+        writeContent(pContent, pFile, false, sCharSet);
+    }
+
+    public static void writeContent(String pContent, File pFile, boolean bAppend) throws IOException {
+        writeContent(pContent, pFile, bAppend, "UTF-8");
+    }
+
+    public static void writeContent(String pContent, File pFile, boolean bAppend, String sCharSet) throws IOException {
+        org.apache.commons.io.FileUtils.writeStringToFile(pFile, pContent, sCharSet.length()==0 ? "UTF-8": sCharSet, bAppend);
     }
 
     public static File stringToImage(String pString) throws IOException {
@@ -114,8 +120,8 @@ public class StringUtils {
         BufferedImage image = null;
         byte[] imageByte;
 
-        BASE64Decoder decoder = new BASE64Decoder();
-        imageByte = decoder.decodeBuffer(pString);
+        Base64.Decoder decoder = Base64.getDecoder();
+        imageByte = decoder.decode(pString);
         ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
         image = ImageIO.read(bis);
         bis.close();

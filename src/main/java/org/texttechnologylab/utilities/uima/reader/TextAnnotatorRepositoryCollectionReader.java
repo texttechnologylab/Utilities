@@ -49,7 +49,7 @@ import static de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData.g
 @Component(value = OperationType.READER)
 public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader_ImplBase {
 	private ExtendedLogger logger;
-	
+
 	public static final String PARAM_TEXT_ANNOTATOR_URL = "pTextAnnotatorUrl";
 	@ConfigurationParameter(
 			name = PARAM_TEXT_ANNOTATOR_URL,
@@ -57,7 +57,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			defaultValue = "http://api.textannotator.texttechnologylab.org:80/"
 	)
 	private static String pTextAnnotatorUrl;
-	
+
 	public static final String PARAM_MONGO_DB_URL = "pMongoDb";
 	@ConfigurationParameter(
 			name = PARAM_MONGO_DB_URL,
@@ -65,7 +65,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			defaultValue = "https://resources.hucompute.org/mongo/"
 	)
 	private static String pMongoDb;
-	
+
 	public static final String PARAM_REMOTE_THREADS = "pThreads";
 	@ConfigurationParameter(
 			name = PARAM_REMOTE_THREADS,
@@ -73,7 +73,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			defaultValue = "8"
 	)
 	private static int pThreads;
-	
+
 	public static final String PARAM_DOCUMENTS_REPOSITORY = "pRepository";
 	@ConfigurationParameter(
 			name = PARAM_DOCUMENTS_REPOSITORY,
@@ -82,19 +82,19 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 //			defaultValue = "14393"  // Delivery 1 + 2
 	)
 	private static String pRepository;
-	
+
 	public static final String PARAM_SESSION_ID = "pSessionId";
 	@ConfigurationParameter(
 			name = PARAM_SESSION_ID
 	)
 	private static String pSessionId;
-	
+
 	public static final String PARAM_SOURCE_LOCATION = ComponentParameters.PARAM_SOURCE_LOCATION;
 	@ConfigurationParameter(
 			name = ComponentParameters.PARAM_SOURCE_LOCATION
 	)
 	private static String sourceLocation;
-	
+
 	public static final String PARAM_TARGET_LOCATION = ComponentParameters.PARAM_TARGET_LOCATION;
 	@ConfigurationParameter(
 			name = ComponentParameters.PARAM_TARGET_LOCATION,
@@ -102,7 +102,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			defaultValue = ""
 	)
 	private static String targetLocation;
-	
+
 	public static final String PARAM_FORCE_RESERIALIZE = "pForceReserialize";
 	@ConfigurationParameter(
 			name = PARAM_FORCE_RESERIALIZE,
@@ -110,7 +110,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			defaultValue = "true"
 	)
 	private static Boolean pForceReserialize;
-	
+
 	/**
 	 * The frequency with which read documents are logged. Default: 1 (log every document).
 	 * <p>
@@ -119,7 +119,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 	public static final String PARAM_LOG_FREQ = "logFreq";
 	@ConfigurationParameter(name = PARAM_LOG_FREQ, mandatory = true, defaultValue = "1")
 	private int logFreq;
-	
+
 	private static final ArrayDeque<Path> currentResources = new ArrayDeque<>();
 	private static final HashSet<Future<Path>> processedResources = Sets.newHashSet();
 	private ExecutorService remotePool;
@@ -127,23 +127,23 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 	private AtomicInteger processingCount = new AtomicInteger(0);
 	private int totalDocumentCount = 0;
 	private ConcurrentHashMap<Path, XmiSerializationSharedData> xmiSerializationSharedDataMap;
-	
+
 	//	private ProgressMeter downloadProgress;
 //	private ProgressMeter processingProgress;
 	private ArrayList<Future<Path>> tasks = new ArrayList<>();
-	
+
 	@Override
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
 		super.initialize(aContext);
 		logger = getLogger();
-		
+
 		remotePool = Executors.newFixedThreadPool(pThreads);
 		pSessionId = StringUtils.appendIfMissing(pSessionId, ".jvm1");
-		
+
 		String remoteFilesURL = pTextAnnotatorUrl + "documents/" + pRepository;
 		logger.info(String.format("Fetching file URIs from %s", remoteFilesURL));
 		final JSONObject remoteFiles = RESTUtils.getObjectFromRest(remoteFilesURL, pSessionId);
-		
+
 		if (remoteFiles.optBoolean("success")) {
 			final JSONArray rArray = remoteFiles.optJSONArray("result");
 			final ArrayList<String> remoteUris = IntStream.range(0, rArray.length())
@@ -155,10 +155,10 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			totalDocumentCount = remoteUris.size();
 //				downloadProgress = new ProgressMeter(totalDocumentCount);
 //				processingProgress = new ProgressMeter(totalDocumentCount);
-			
+
 			logger.info(String.format("Downloading %d files in parallel with %d threads for from repository '%s'\nURIs: %s",
 					totalDocumentCount, pThreads, pRepository, remoteUris.toString()));
-			
+
 			// Download and pre-process all remote files in parallel
 			xmiSerializationSharedDataMap = new ConcurrentHashMap<>();
 			for (String uri : remoteUris) {
@@ -169,7 +169,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			logger.error(remoteFiles.toString());
 		}
 	}
-	
+
 	@Override
 	public void getNext(CAS aCAS) throws IOException, CollectionException {
 		waitForNext();
@@ -190,26 +190,26 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			}
 		}
 	}
-	
+
 	@Override
 	public void destroy() {
 		super.destroy();
 		if (remotePool != null)
 			remotePool.shutdownNow();
 	}
-	
+
 	@Override
 	public boolean hasNext() throws IOException, CollectionException {
 		waitForNext();
 		return !currentResources.isEmpty();
 	}
-	
+
 	public boolean allTasksDone() {
 		return tasks.stream()
 				.map(this::checkFuture)
 				.reduce(Boolean::logicalAnd).orElse(true);
 	}
-	
+
 	private void waitForNext() {
 		try {
 			synchronized (currentResources) {
@@ -221,7 +221,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			e.printStackTrace();
 		}
 	}
-	
+
 	private Boolean checkFuture(Future<Path> future) {
 		if (future.isDone()) {
 			if (!processedResources.contains(future)) {
@@ -240,21 +240,21 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			return false;
 		}
 	}
-	
+
 	@Override
 	public Progress[] getProgress() {
 		return new Progress[]{
 				new ProgressImpl(downloadCount.get(), totalDocumentCount, "file")
 		};
 	}
-	
+
 	private class DownloadCallable implements Callable<Path> {
 		final String uri;
-		
+
 		DownloadCallable(String uri) {
 			this.uri = uri;
 		}
-		
+
 		@Override
 		public Path call() {
 			String mongoUri = pMongoDb + uri;
@@ -268,7 +268,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 					String documentId = documentName
 							.replaceFirst("[^_]*_(\\d+)_.*", "$1")
 							.replaceAll("\\.[^.]+$", "");
-					
+
 					// Download file
 					URL casURL = new URL(pTextAnnotatorUrl + "cas/" + uri + "?session=" + pSessionId);
 					utf8Path = Paths.get(sourceLocation, documentName);
@@ -285,7 +285,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 						updateDownloadProgress(mongoUri);
 						return null; // FIXME
 					}
-					
+
 					// Reserialize the UTF-8 forced JCas
 					if (pForceReserialize) {
 						try (FileInputStream inputStream = FileUtils.openInputStream(utf8File)) {
@@ -296,7 +296,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 							updateDownloadProgress(mongoUri);
 							return null; // FIXME
 						}
-						
+
 						if (JCasUtil.select(jCas, DocumentMetaData.class).size() == 0) {
 							DocumentMetaData documentMetaData = create(jCas);
 							documentMetaData.setDocumentId(documentId);
@@ -312,10 +312,10 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 							if (documentMetaData.getDocumentTitle() == null)
 								documentMetaData.setDocumentTitle(documentName);
 						}
-						
+
 						// Delete old file
 						delete(utf8File);
-						
+
 						// Reserialize file as xmi
 						try (FileOutputStream outputStream = new FileOutputStream(utf8File)) {
 							XmiSerializationSharedData xmiSerializationSharedData = new XmiSerializationSharedData();
@@ -328,7 +328,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 							return null; // FIXME
 						}
 					}
-					
+
 					if (targetLocation != null && !targetLocation.equals("")) {
 						Path textPath = Paths.get(targetLocation, uri + ".txt");
 						try {
@@ -359,7 +359,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			}
 			return utf8Path;
 		}
-		
+
 		private void delete(File utf8File) throws IOException {
 			// Delete old file
 			try {
@@ -369,7 +369,7 @@ public class TextAnnotatorRepositoryCollectionReader extends CasCollectionReader
 			}
 		}
 	}
-	
+
 	private void updateDownloadProgress(String mongoUri) {
 		int downloads = downloadCount.incrementAndGet();
 //				downloadProgress.setDone(downloads);

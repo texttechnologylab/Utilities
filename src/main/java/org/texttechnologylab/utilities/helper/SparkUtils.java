@@ -59,6 +59,12 @@ public class SparkUtils {
 
     }
 
+    public static boolean prepareReturnHTML(spark.Response res, String result){
+
+        return prepareReturn(res, result, 200, "text/html");
+
+    }
+
     public static boolean prepareReturn(spark.Response res, String result, String sMimeType){
 
         return prepareReturn(res, result, 200, sMimeType);

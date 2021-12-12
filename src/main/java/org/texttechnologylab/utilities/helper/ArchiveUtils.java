@@ -11,10 +11,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -66,7 +70,7 @@ public class ArchiveUtils {
 
         File rFile = new File(newPath);
 
-        if(rFile.exists()){
+        if(rFile.exists() && rFile.length()>0){
             return rFile;
         }
 
@@ -135,7 +139,6 @@ public class ArchiveUtils {
         file.delete();
     }
 
-
     public static File createZipArchive(List<File> inputFiles) throws IOException {
 
         File rFile = TempFileHandler.getTempFile("aaa", "bbb");
@@ -176,6 +179,53 @@ public class ArchiveUtils {
         zos.close();
 
         return rFile;
+
+    }
+
+    public static File compressGZ(File pFile) throws IOException {
+        return compressGZ(pFile, false);
+    }
+
+    public static File decompressGZ(File pFile) throws IOException {
+        return decompressGZ(pFile, false);
+    }
+
+    public static File compressGZ(File pFile, boolean bPersistent) throws IOException {
+
+        File rFile = TempFileHandler.getTempFileName(pFile.getName()+".gz");
+        compressGZ(Paths.get(pFile.getAbsolutePath()), Paths.get(rFile.getAbsolutePath()));
+        rFile.deleteOnExit();
+        return rFile;
+
+    }
+
+    public static File decompressGZ(File pFile, boolean bPersistent) throws IOException {
+
+        File rFile = TempFileHandler.getTempFileName(pFile.getName().replace(".gz", ""));
+
+        decompressGZ(Paths.get(pFile.getAbsolutePath()), Paths.get(rFile.getAbsolutePath()));
+        rFile.deleteOnExit();
+        return rFile;
+
+    }
+
+    public static void decompressGZ(Path input, Path output) throws IOException {
+
+        try (GZIPInputStream gis = new GZIPInputStream(
+                new FileInputStream(input.toFile()))) {
+            Files.copy(gis, output);
+
+        }
+
+    }
+
+    public static void compressGZ(Path input, Path output) throws IOException {
+
+        try (GZIPOutputStream gos = new GZIPOutputStream(
+                new FileOutputStream(output.toFile()))) {
+
+            Files.copy(input, gos);
+        }
 
     }
 

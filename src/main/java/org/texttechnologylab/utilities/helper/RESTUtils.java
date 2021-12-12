@@ -71,6 +71,7 @@ public class RESTUtils {
 
         Webb webb = Webb.create();
 
+
         Request request = null;
 
         switch (method){
@@ -91,6 +92,7 @@ public class RESTUtils {
                 break;
         }
 
+
         for(Map<String, Object> k : params){
             Iterator<String> kSet = k.keySet().iterator();
 
@@ -100,6 +102,43 @@ public class RESTUtils {
             }
 
         }
+
+        rObject = request.ensureSuccess().asJsonObject().getBody();
+
+        return rObject;
+    }
+
+    public static JSONObject getObjectFromRest(String uri, METHODS method, String sBody){
+
+        enableSSLTrustCertificates();
+
+        JSONObject rObject = new JSONObject();
+
+        Webb webb = Webb.create();
+
+
+        Request request = null;
+
+        switch (method){
+            case GET:
+                request = webb.get(uri);
+                break;
+
+            case POST:
+                request = webb.post(uri);
+                break;
+
+            case DELETE:
+                request = webb.delete(uri);
+                break;
+
+            case PUT:
+                request = webb.put(uri);
+                break;
+        }
+
+
+        request = request.body(sBody);
 
         rObject = request.ensureSuccess().asJsonObject().getBody();
 
