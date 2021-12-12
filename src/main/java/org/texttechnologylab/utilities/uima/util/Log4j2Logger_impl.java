@@ -189,7 +189,7 @@ public class Log4j2Logger_impl implements Logger {
 		// get corresponding Log4j level
 		org.apache.logging.log4j.Level log4jLevel = getLog4jLevel(level);
 
-		logger.atLevel(log4jLevel);
+
 	}
 
 	/*
