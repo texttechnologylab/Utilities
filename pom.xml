@@ -5,7 +5,7 @@
 
     <groupId>org.texttechnologylab</groupId>
     <artifactId>utilities</artifactId>
-    <version>1.1.4-uima-2.10.4</version>
+    <version>1.1.5-uima-2.10.4</version>
 
 
     <repositories>
@@ -147,11 +147,6 @@
             <artifactId>log4j-core</artifactId>
             <version>2.16.0</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-slf4j-impl</artifactId>-->
-<!--            <version>2.15.3</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>com.sparkjava</groupId>
