@@ -5,10 +5,9 @@
 
     <groupId>org.texttechnologylab</groupId>
     <artifactId>utilities</artifactId>
-    <version>1.1.5-uima-2.10.4</version>
+    <version>1.1.7-uima-2.10.4</version>
 
-
-    <repositories>
+  <repositories>
         <repository>
             <id>central</id>
             <name>Maven Plugin Repository</name>
