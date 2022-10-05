@@ -88,6 +88,45 @@ public class ArchiveUtils {
 
     }
 
+    public static File gunzip(File f, boolean bTempFolder) throws IOException {
+        if(bTempFolder){
+            return gunzip(f, Paths.get("/tmp/"));
+        }
+        else{
+            return gunzip(f, Paths.get(f.getPath()));
+        }
+    }
+
+    public static File gunzip(File f, Path targetPath) throws IOException {
+
+        GZIPInputStream gzis =
+                new GZIPInputStream(new FileInputStream(f));
+
+        String newPath = targetPath+f.getName().replace(".gz", "");
+
+        FileOutputStream out =
+                new FileOutputStream(newPath);
+
+        File rFile = new File(newPath);
+
+        if(rFile.exists() && rFile.length()>0){
+            return rFile;
+        }
+
+        byte[] buffer = new byte[1024];
+
+        int len;
+        while ((len = gzis.read(buffer)) > 0) {
+            out.write(buffer, 0, len);
+        }
+
+        gzis.close();
+        out.close();
+
+        return rFile;
+
+    }
+
     public static ArrayList<File> unzipzip(File f)throws IOException, ArchiveException {
         ArrayList<File> archiveContents = new ArrayList<File>();
 
