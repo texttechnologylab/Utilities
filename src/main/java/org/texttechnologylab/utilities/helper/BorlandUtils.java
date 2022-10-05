@@ -11,17 +11,48 @@ public class BorlandUtils {
 
     public static enum DATATYPE {String, StringSet, StringList, Integer, StringDistribution, IntegerDistribution, Long, Float, Double, Boolean};
 
+
+    public static enum DATATYPE_GRAPH {SimilarityGraph, DistanceGraph};
+
     public static String createHeader(Map<String,DATATYPE> vertices, Map<String,DATATYPE> edges){
+        return createHeader(vertices, edges, DATATYPE_GRAPH.SimilarityGraph);
+    }
+
+    public static String createHeader(Map<String,DATATYPE> vertices, Map<String,DATATYPE> edges, Map<String,DATATYPE> graph){
+        return createHeader(vertices, edges, graph, DATATYPE_GRAPH.SimilarityGraph);
+    }
+
+    public static String createHeader(Map<String,DATATYPE> vertices, Map<String,DATATYPE> edges, DATATYPE_GRAPH graphType){
 
         StringBuilder sb = new StringBuilder();
 
             sb.append("directed");
             sb.append("\n");
-            sb.append("SimilarityGraph");
+            sb.append(graphType.toString());
             sb.append("\n");
 
             sb.append(createAttributesVertices(vertices));
             sb.append(createAttributesEdges(edges));
+
+            sb.append("ProbabilityMassOfGraph: 0");
+            sb.append("\n");
+
+        return sb.toString();
+
+    }
+
+    public static String createHeader(Map<String,DATATYPE> vertices, Map<String,DATATYPE> edges, Map<String,DATATYPE> graph, DATATYPE_GRAPH graphType){
+
+        StringBuilder sb = new StringBuilder();
+
+            sb.append("directed");
+            sb.append("\n");
+            sb.append(graphType.toString());
+            sb.append("\n");
+
+            sb.append(createAttributesVertices(vertices));
+            sb.append(createAttributesEdges(edges));
+            sb.append(createAttributesGraph(graph));
 
             sb.append("ProbabilityMassOfGraph: 0");
             sb.append("\n");
@@ -78,7 +109,33 @@ public class BorlandUtils {
 
     }
 
+    public static String createAttributesGraph(Map<String,DATATYPE> keyMap){
+
+        StringBuilder sb = new StringBuilder();
+
+            sb.append("Graph Attributes:");
+
+            keyMap.keySet().forEach(k->{
+
+                sb.append("[");
+                    sb.append(k);
+                    sb.append(delemiter);
+                    sb.append(keyMap.get(k));
+                sb.append("];");
+
+            });
+            sb.append("\n");
+        return sb.toString();
+
+    }
+
     public static void writeVertex(Object id, Map<String,Object> valueMap, File fFile) throws IOException {
+
+        StringUtils.writeContent(addVertex(id, valueMap), fFile, true);
+
+    }
+
+    public static void writeGraph(Object id, Map<String,Object> valueMap, File fFile) throws IOException {
 
         StringUtils.writeContent(addVertex(id, valueMap), fFile, true);
 
@@ -175,6 +232,27 @@ public class BorlandUtils {
         StringBuilder sb = new StringBuilder();
 
             sb.append(sHeader);
+            sb.append("Vertices:");
+            sb.append("\n");
+            sb.append(sVertices);
+
+            sb.append("Edges:");
+            sb.append("\n");
+            sb.append(sEdges);
+
+        return sb.toString();
+
+    }
+
+    public static String createBorland(String sHeader, String sVertices, String sEdges, String sGraph){
+
+        StringBuilder sb = new StringBuilder();
+
+            sb.append(sHeader);
+            sb.append("Graph:");
+            sb.append("\n");
+            sb.append(sGraph);
+
             sb.append("Vertices:");
             sb.append("\n");
             sb.append(sVertices);
