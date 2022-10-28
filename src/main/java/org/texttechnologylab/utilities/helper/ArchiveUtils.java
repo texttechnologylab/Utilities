@@ -15,12 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
 /**
  * Created by abrami on 28.09.16.
@@ -125,6 +123,35 @@ public class ArchiveUtils {
 
         return rFile;
 
+    }
+
+    public static Set<File> unzip(File f) throws IOException {
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(f));
+        ZipEntry zipEntry = zis.getNextEntry();
+        byte[] buffer = new byte[1024];
+
+        Set<File> rSet = new HashSet<>(0);
+
+        while (zipEntry != null){
+            System.out.println(zipEntry.getName());
+
+            File tFile = TempFileHandler.getTempFileName(zipEntry.getName());
+            tFile.deleteOnExit();
+
+            FileOutputStream fos = new FileOutputStream(tFile);
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+            fos.close();
+            rSet.add(tFile);
+
+            zipEntry = zis.getNextEntry();
+        }
+        zis.closeEntry();
+        zis.close();
+
+        return rSet;
     }
 
     public static ArrayList<File> unzipzip(File f)throws IOException, ArchiveException {
