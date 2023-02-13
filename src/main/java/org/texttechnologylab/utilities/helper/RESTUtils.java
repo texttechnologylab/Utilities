@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.*;
 
 import static spark.Spark.halt;
+import static spark.Spark.head;
 
 /**
  * Created by abrami on 24.08.16.
@@ -171,6 +172,52 @@ public class RESTUtils {
             case PUT:
                 request = webb.put(uri);
                 break;
+        }
+
+        Set<String> sSet = params.keySet();
+
+        for (String s : sSet) {
+            request = request.param(s, params.get(s));
+
+        }
+
+        rObject = request.ensureSuccess().asJsonObject().getBody();
+
+        return rObject;
+    }
+
+    public static JSONObject getObjectFromRest(String uri, METHODS method, Map<String, Object> params, Map<String, Object> headers){
+
+        enableSSLTrustCertificates();
+
+        JSONObject rObject = new JSONObject();
+
+        Webb webb = Webb.create();
+
+        Request request = null;
+
+        switch (method){
+            case GET:
+                request = webb.get(uri);
+                break;
+
+            case POST:
+                request = webb.post(uri);
+                break;
+
+            case DELETE:
+                request = webb.delete(uri);
+                break;
+
+            case PUT:
+                request = webb.put(uri);
+                break;
+        }
+
+        Set<String> hSet = headers.keySet();
+
+        for (String s : hSet) {
+            request = request.header(s, headers.get(s));
         }
 
         Set<String> sSet = params.keySet();
