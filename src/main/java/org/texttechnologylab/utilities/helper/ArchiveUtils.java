@@ -287,7 +287,7 @@ public class ArchiveUtils {
             oPath = Paths.get(oPath.toUri()+"/");
         }
 
-        decompressGZ(Paths.get(pFile.getAbsolutePath()), Paths.get(oPath.toUri()+rFile.getName()));
+        decompressGZ(Paths.get(pFile.getAbsolutePath()), Paths.get(oPath.toUri().toString()+rFile.getName()));
         if(!bPersistent) {
             rFile.deleteOnExit();
         }
