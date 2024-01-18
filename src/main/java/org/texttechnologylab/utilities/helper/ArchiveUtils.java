@@ -284,10 +284,10 @@ public class ArchiveUtils {
         File rFile = TempFileHandler.getTempFileName(pFile.getName().replace(".gz", ""));
 
         if(!oPath.endsWith("/")){
-            oPath = Paths.get(oPath.toUri()+"/");
+            oPath = Paths.get(oPath.toString()+"/");
         }
 
-        decompressGZ(Paths.get(pFile.getAbsolutePath()), Paths.get(oPath.toUri().toString()+rFile.getName()));
+        decompressGZ(Paths.get(pFile.getAbsolutePath()), Paths.get(oPath.toString()+rFile.getName()));
         if(!bPersistent) {
             rFile.deleteOnExit();
         }
