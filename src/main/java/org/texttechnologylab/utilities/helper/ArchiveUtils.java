@@ -275,6 +275,26 @@ public class ArchiveUtils {
 
     }
 
+    public static File decompressGZ(File pFile, Path oPath) throws IOException {
+        return decompressGZ(pFile, oPath, false);
+    }
+
+    public static File decompressGZ(File pFile, Path oPath, boolean bPersistent) throws IOException {
+
+        File rFile = TempFileHandler.getTempFileName(pFile.getName().replace(".gz", ""));
+
+        if(!oPath.endsWith("/")){
+            oPath = Paths.get(oPath.toUri()+"/");
+        }
+
+        decompressGZ(Paths.get(pFile.getAbsolutePath()), Paths.get(oPath.toUri()+rFile.getName()));
+        if(!bPersistent) {
+            rFile.deleteOnExit();
+        }
+        return rFile;
+
+    }
+
     public static void decompressGZ(Path input, Path output) throws IOException {
 
         try (GZIPInputStream gis = new GZIPInputStream(

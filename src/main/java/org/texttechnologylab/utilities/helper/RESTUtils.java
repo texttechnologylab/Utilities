@@ -16,12 +16,14 @@ import java.io.*;
 import java.util.*;
 
 import static spark.Spark.halt;
-import static spark.Spark.head;
 
 /**
  * Created by abrami on 24.08.16.
  */
+
 public class RESTUtils {
+
+    public static enum METHODS {GET, POST, DELETE, PUT}
 
     public static void enableSSLTrustCertificates(){
 
@@ -48,8 +50,6 @@ public class RESTUtils {
             }
 
     }
-
-    public static enum METHODS {GET, POST, DELETE, PUT}
 
     public static JSONObject getObjectFromRest(String uri, String session){
         JSONObject rObject = new JSONObject();
