@@ -1,17 +1,17 @@
 package org.texttechnologylab.utilities.helper;
 
-import sun.security.action.GetPropertyAction;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.AccessController;
 
 /**
  * Created by abrami on 12.01.16.
  */
 public class TempFileHandler {
 
-    private static final File tmpdir = new File((String) AccessController.doPrivileged(new GetPropertyAction("java.io.tmpdir")));
+    private static final File tmpdir = new File(System.getProperty("java.io.tmpdir"));
+
+
 
     public static File getTempFile() throws IOException {
         File f = getTempFile("s", "p");

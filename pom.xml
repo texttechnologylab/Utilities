@@ -5,7 +5,7 @@
 
     <groupId>org.texttechnologylab</groupId>
     <artifactId>utilities</artifactId>
-    <version>1.1.7-uima-2.10.4</version>
+    <version>3.0.0</version>
 
   <repositories>
         <repository>
@@ -28,8 +28,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
 
@@ -64,15 +64,18 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
                 <configuration>
-                    <argLine>-Xmx1G -Dorg.apache.uima.logger.class=org.texttechnologylab.utilities.uima.util.Log4j2Logger_impl
+                    <argLine>
+                        --illegal-access=permit
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        <!--                        add-opens for use in JUnit-Tests...-->
                     </argLine>
-                    <skipTests>true</skipTests>
-
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
@@ -95,6 +98,29 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.uima/uimaj-core -->
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uimaj-core</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.uima/uimafit-core -->
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uimafit-core</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.texttechnologylab</groupId>
+            <artifactId>UIMATypeSystem</artifactId>
+            <version>bd6e684b12</version>
+            <scope>provided</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>com.goebl</groupId>
             <artifactId>david-webb</artifactId>
@@ -150,7 +176,7 @@
         <dependency>
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
-            <version>2.9.3</version>
+            <version>2.9.4</version>
         </dependency>
 
         <dependency>
@@ -174,21 +200,21 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.10.3</version>
+            <version>2.16.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.10.3</version>
+            <version>2.16.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.10.3</version>
+            <version>2.16.1</version>
         </dependency>
 
         <dependency>
@@ -202,19 +228,7 @@
             <version>1.4.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.uima/uimaj-core -->
-        <dependency>
-            <groupId>org.apache.uima</groupId>
-            <artifactId>uimaj-core</artifactId>
-            <version>2.10.4</version>
-        </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.uima/uimafit-core -->
-        <dependency>
-            <groupId>org.apache.uima</groupId>
-            <artifactId>uimafit-core</artifactId>
-            <version>2.4.0</version>
-        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -229,29 +243,10 @@
             <version>3.0.2.7</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/de.tudarmstadt.ukp.dkpro.core/de.tudarmstadt.ukp.dkpro.core.io.xmi-asl -->
         <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.io.xmi-asl</artifactId>
-            <version>1.10.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dkpro.core</groupId>
-            <artifactId>dkpro-core-io-xmi-asl</artifactId>
-            <version>${dkpro.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/de.tudarmstadt.ukp.dkpro.core/de.tudarmstadt.ukp.dkpro.core.api.parameter-asl -->
-        <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.api.parameter-asl</artifactId>
-            <version>1.10.0</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
 
