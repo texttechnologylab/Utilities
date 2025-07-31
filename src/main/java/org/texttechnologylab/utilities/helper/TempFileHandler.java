@@ -12,7 +12,6 @@ public class TempFileHandler {
     private static final File tmpdir = new File(System.getProperty("java.io.tmpdir"));
 
 
-
     public static File getTempFile() throws IOException {
         File f = getTempFile("s", "p");
         f.deleteOnExit();
