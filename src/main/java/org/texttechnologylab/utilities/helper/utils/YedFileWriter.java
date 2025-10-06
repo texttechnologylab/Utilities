@@ -28,12 +28,15 @@ public class YedFileWriter {
     }
 
     private String getGraphMLHeader() {
-        String header = "<?xml version=\"1.0\" ?>";
-        header += "\r\n<graphml\r\n  xmlns=\"http://graphml.graphdrawing.org/xmlns\"\r\n  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n  xmlns:y=\"http://www.yworks.com/xml/graphml\"\r\n  xmlns:yed=\"http://www.yworks.com/xml/yed/3\"\r\n  xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns\r\n  http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd\"\r\n>";
-        header += "\r\n  <key for=\"node\" id=\"d5\" attr.name=\"description\" attr.type=\"string\" />";
-        header += "\r\n  <key for=\"node\" id=\"d6\" yfiles.type=\"nodegraphics\"/>";
-        header += "\r\n  <graph id=\"G\" edgedefault=\"directed\">";
-        return header;
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" ?>");
+
+        sb.append("\r\n<graphml\r\n  xmlns=\"http://graphml.graphdrawing.org/xmlns\"\r\n  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n  xmlns:y=\"http://www.yworks.com/xml/graphml\"\r\n  xmlns:yed=\"http://www.yworks.com/xml/yed/3\"\r\n  xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns\r\n  http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd\"\r\n>");
+//        sb.append("\r\n  <key for=\"node\" id=\"d5\" attr.name=\"description\" attr.type=\"string\" />");
+//        sb.append("\r\n  <key for=\"node\" id=\"d6\" yfiles.type=\"nodegraphics\"/>");
+        sb.append("\r\n  <graph id=\"G\" edgedefault=\"directed\">");
+
+        return sb.toString();
     }
 
     private String getGraphMLFooter() {
@@ -44,16 +47,17 @@ public class YedFileWriter {
     private String getNode(String id) {
         Vertex v = graph.getVertex(id);
 
-        String node = "\r\n    <node id=\"" + id + "\">";
-        node += "\r\n      <data key=\"d5\"/>";
-        node += "\r\n      <data key=\"d6\">";
-        node += "\r\n        <y:ShapeNode>";
-        node += "\r\n          <y:NodeLabel>" + v.getProperty("label") + "</y:NodeLabel>";
-        node += "\r\n          <y:Shape type=\""+v.getProperty("type")+"\"/>";
-        node += "\r\n        </y:ShapeNode>";
-        node += "\r\n      </data>";
-        node += "\r\n    </node>";
-        return node;
+        StringBuilder sb = new StringBuilder();
+        sb.append("\r\n    <node id=\"" + id + "\">");
+        sb.append("\r\n      <data key=\"d5\"/>");
+        sb.append("\r\n      <data key=\"d6\">");
+        sb.append("\r\n        <y:ShapeNode>");
+        sb.append("\r\n          <y:NodeLabel>" + v.getProperty("label") + "</y:NodeLabel>");
+        sb.append("\r\n          <y:Shape type=\""+v.getProperty("type")+"\"/>");
+        sb.append("\r\n        </y:ShapeNode>");
+        sb.append("\r\n      </data>");
+        sb.append("\r\n    </node>");
+        return sb.toString();
     }
 
     private String getEdge(Edge edge) {
